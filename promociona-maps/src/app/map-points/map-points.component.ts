@@ -3,28 +3,22 @@ import { Component, OnInit } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import { MapService } from '../services/map.service';
 
-
-
 @Component({
   selector: 'app-map-points',
   templateUrl: './map-points.component.html',
-  styleUrls: ['./map-points.component.css']
+  styleUrls: ['./map-points.component.css'],
 })
-
-
 export class MapPointsComponent implements OnInit {
-
-  constructor(private mapService: MapService) { }
+  constructor(private mapService: MapService) {}
 
   ngOnInit() {
-
     this.mapService.buildMap();
 
     this.mapService.map.on('load', () => {
       this.mapService.map.addSource('points', {
         type: 'geojson',
-        data: 'https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson',
-        cluster : true,
+        data: '../assets/earthquakes.geojson',
+        cluster: true,
         clusterMaxZoom: 40,
         clusterRadius: 100,
       });
@@ -35,25 +29,25 @@ export class MapPointsComponent implements OnInit {
         source: 'points',
         filter: ['has', 'point_count'], // Filtrar solo los marcadores de agrupación
         paint: {
-            'circle-color': [
-                'step',
-                ['get', 'point_count'],
-                '#51bbd6',
-                100,
-                '#f1f075',
-                750,
-                '#f28cb1'
-            ],
-            'circle-radius': [
-                'step',
-                ['get', 'point_count'],
-                20,
-                100,
-                30,
-                750,
-                40
-            ]
-        }
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#51bbd6',
+            100,
+            '#f1f075',
+            750,
+            '#f28cb1',
+          ],
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            20,
+            100,
+            30,
+            750,
+            40,
+          ],
+        },
       });
 
       this.mapService.map.addLayer({
@@ -62,10 +56,10 @@ export class MapPointsComponent implements OnInit {
         source: 'points',
         filter: ['has', 'point_count'], // Filtrar solo los marcadores de agrupación
         layout: {
-            'text-field': '{point_count_abbreviated}',
-            'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-            'text-size': 20
-        }
+          'text-field': '{point_count_abbreviated}',
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 20,
+        },
       });
 
       this.mapService.map.addLayer({
@@ -77,8 +71,8 @@ export class MapPointsComponent implements OnInit {
           'circle-color': '#11b4da',
           'circle-radius': 4,
           'circle-stroke-width': 1,
-          'circle-stroke-color': '#fff'
-          }
+          'circle-stroke-color': '#fff',
+        },
       });
     });
   }
