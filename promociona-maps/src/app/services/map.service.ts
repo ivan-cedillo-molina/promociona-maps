@@ -16,10 +16,10 @@ export class MapService {
   // Coordenadas de la localización donde queremos centrar el mapa
   lat = 40.4165000;
   lng = -3.7025600;
-  zoom = 5;
+  zoom = 6;
 
 
-  
+
 
   constructor() {
     // Asignamos el token desde las variables de entorno
@@ -30,56 +30,20 @@ export class MapService {
       container: 'map',
       style: this.style,
       zoom: this.zoom,
-      center: [this.lng, this.lat]      
+      center: [this.lng, this.lat]
     });
 
-  // const markers = [
-  //     {
-  //       coordinates: [-3.74922, 40.463667], // Coordenadas del primer marcador
-  //       description: 'Este es el primer marcador' // Descripción del primer marcador
-  //     },
-  //     {
-  //       coordinates: [-3.70379, 40.416775], // Coordenadas del segundo marcador
-  //       description: 'Este es el segundo marcador' // Descripción del segundo marcador
-  //     }
-  //   ];  
+    this.map.addControl(new mapboxgl.NavigationControl());
+  }
 
-    
+  buildMapRegion() {
+    this.map = new mapboxgl.Map({
+      container: 'map-region',
+      style: this.style,
+      zoom: this.zoom,
+      center: [this.lng, this.lat]
+    });
 
-  //   markers.forEach(marker => {
-
-  //     const lngLat = new mapboxgl.LngLat(marker.coordinates[0], marker.coordinates[1]);
-
-  //     new mapboxgl.Marker()
-  //       .setLngLat(lngLat)
-  //       .setPopup(new mapboxgl.Popup().setHTML(marker.description))
-  //       .addTo(this.map);
-  //   });
-
-
-
-  // this.map.map.on('load', () => {
-  //   this.map.map.addSource('my-data', {
-  //     type: 'geojson',
-  //     data: 'https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson'
-  //   });
-
-  //   this.map.map.addLayer({
-  //     id: 'my-layer',
-  //     type: 'circle',
-  //     source: 'my-data',
-  //     paint: {
-  //       'circle-radius': 6,
-  //       'circle-color': '#B42222'
-  //     }
-  //   });
-  // });
-
-
-    
-
-
-
-      this.map.addControl(new mapboxgl.NavigationControl());
-    }
+    this.map.addControl(new mapboxgl.NavigationControl());
+  }
 }
