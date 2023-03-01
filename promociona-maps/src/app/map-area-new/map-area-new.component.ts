@@ -81,11 +81,6 @@ export class MapAreaNewComponent implements OnInit {
       }
 
       localStorage.setItem('listaParcelasNew', JSON.stringify(this.mapService.listaParcelasNew));
-
-      if (!this.mapService.listaParcelas.find(x => x.id == item.id)) {
-        this.mapService.listaParcelas.push(item);
-        localStorage.setItem('listaParcelas', JSON.stringify(this.mapService.listaParcelas));
-      }
     });
 
     this.mapService.map.on('draw.update', (event: any) => {
@@ -111,36 +106,19 @@ export class MapAreaNewComponent implements OnInit {
       }
 
       localStorage.setItem('listaParcelasNew', JSON.stringify(this.mapService.listaParcelasNew));
-
-
-      var indexToRemove2 = this.mapService.listaParcelas.findIndex(x => x.id == item.id);
-      if (indexToRemove2 !== -1) {
-        this.mapService.listaParcelas.splice(indexToRemove2, 1);
-        this.mapService.listaParcelas.push(item);
-      }
-
-      localStorage.setItem('listaParcelas', JSON.stringify(this.mapService.listaParcelas));
     });
 
     this.mapService.map.on('draw.delete', (event: any) => {
       var polygon = event.features[0];
-     
+
       if (this.mapService.listaParcelasNew.features != undefined) {
         var indexToRemove = this.mapService.listaParcelasNew.features.findIndex(x => x.id == polygon.id);
 
-        if (indexToRemove !== -1) 
+        if (indexToRemove !== -1)
           this.mapService.listaParcelasNew.features.splice(indexToRemove, 1);
       }
 
       localStorage.setItem('listaParcelasNew', JSON.stringify(this.mapService.listaParcelasNew));
-
-
-      var indexToRemove2 = this.mapService.listaParcelas.findIndex(x => x.id == polygon.id);
-      if (indexToRemove2 !== -1) 
-        this.mapService.listaParcelas.splice(indexToRemove2, 1);
-      
-
-      localStorage.setItem('listaParcelas', JSON.stringify(this.mapService.listaParcelas));
     });
 
   }
