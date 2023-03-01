@@ -25,16 +25,12 @@ export class MapPointsComponent implements OnInit {
         clusterRadius: 100,
       });
 
-
-
       this.mapService.map.loadImage('assets/images/iconoPuntoMapa.png', (error: any, image: any) => {
         if (error) throw error;
 
         // Add the image to the map style.
         this.mapService.map.addImage('icon', image);
       });
-
-
 
       this.mapService.map.addLayer({
         id: 'clusters',

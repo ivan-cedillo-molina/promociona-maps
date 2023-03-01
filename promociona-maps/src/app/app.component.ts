@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GeoJSON } from './models/geo-json';
 import { MapService } from './services/map.service';
+import { FeatureCollection, Feature, Polygon } from 'geojson';
 
 @Component({
   selector: 'app-root',
@@ -19,6 +20,13 @@ export class AppComponent implements OnInit {
     if (jsonLista !== null) {
       const listaObjetos: GeoJSON[] = JSON.parse(jsonLista);
       this.mapService.listaParcelas = listaObjetos;
+    }
+
+
+    const jsonListaParcelas = localStorage.getItem('listaParcelasNew');
+    if (jsonListaParcelas !== null) {
+      const listaObjetos: FeatureCollection = JSON.parse(jsonListaParcelas);
+      this.mapService.listaParcelasNew = listaObjetos;
     }
   }
 }

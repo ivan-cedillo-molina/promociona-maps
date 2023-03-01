@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import { environment } from 'src/environments/environment';
 import { GeoJSON } from '../models/geo-json';
-import { Feature, GeoJSONPoints } from '../models/geo-json-points';
+//import { Feature, FeatureCollection } from '../models/geo-json-points';
+import { FeatureCollection, Feature, Polygon } from 'geojson';
+
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +18,12 @@ export class MapService {
   lat = 40.4165000;
   lng = -3.7025600;
   zoom = 5;
-  listaParcelas : GeoJSON [] = [];
+  listaParcelas: GeoJSON[] = [];
+
+  listaParcelasNew: FeatureCollection = {
+    type: "FeatureCollection",
+    features: []
+  };
 
   constructor() {
     // Asignamos el token desde las variables de entorno
@@ -34,12 +41,12 @@ export class MapService {
     this.map.addControl(new mapboxgl.NavigationControl());
   }
 
-  buildMapRegion(zoom : number, lng :number,lat :number) {
+  buildMapRegion(zoom: number, lng: number, lat: number) {
     this.map = new mapboxgl.Map({
       container: 'map-region',
       style: this.style,
       zoom: zoom,
-      center: [lng,lat]
+      center: [lng, lat]
     });
 
     this.map.addControl(new mapboxgl.NavigationControl());
@@ -57,22 +64,24 @@ export class MapService {
   }
 
 
-  getPointList(): GeoJSONPoints {
-    
-    var items: GeoJSONPoints = {
-      type : "FeatureCollection",
-      features : []
+  getPointList(): FeatureCollection {
+
+    var items: FeatureCollection = {
+      type: "FeatureCollection",
+      features: []
     };
 
-    this.listaParcelas.forEach(element => {
-
-      var feature: Feature = {
-       type : "Feature",
-       geometry : {  type : "Point", coordinates: element.coordinates[0][0] },
-       properties: {
-         name : element.id
-       }
-      };
+    this.listaParcelasNew.features.forEach(element => {
+      var text = "";
+      if (element.geometry.type === 'Polygon') {
+        var feature: Feature = {
+          type: "Feature",
+          geometry: { type: "Point", coordinates: element.geometry.coordinates[0][0] },
+          properties: {
+            name: element.id
+          }
+        };
+      }
 
       items.features.push(feature);
     });
@@ -81,15 +90,15 @@ export class MapService {
   }
 
   getPoligonsCoordinatesList() {
-    
-    var items :any = [];
+
+    var items: any = [];
 
     this.listaParcelas.forEach(element => {
       items.push(element.coordinates[0]);
     });
 
-     return items;
-   }
+    return items;
+  }
 
 
 }

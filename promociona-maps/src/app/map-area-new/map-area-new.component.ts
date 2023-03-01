@@ -6,7 +6,7 @@ import { GeoJSON } from '../models/geo-json';
 import * as mapboxgl from 'mapbox-gl';
 import { MapService } from 'src/app/services/map.service';
 import { AppComponent } from '../app.component';
-
+import { Feature, FeatureCollection } from '../models/geo-json-points';
 
 @Component({
   selector: 'app-map-area-new',
@@ -23,28 +23,44 @@ export class MapAreaNewComponent implements OnInit {
     this.mapService.buildMapRegionNew();
 
     this.mapService.map.on('load', () => {
-      this.mapService.map.addSource('points', {
+
+      this.mapService.map.addSource('maine', {
         type: 'geojson',
-        data: '../assets/earthquakes.geojson',
-        cluster: true,
-        clusterMaxZoom: 50,
-        clusterRadius: 100,
+        data: {
+          type: 'FeatureCollection',
+          features: []
+        },
+      });
+
+      this.mapService.map.addLayer({
+        id: 'poligonos',
+        type: 'fill',
+        source: 'maine',
+        paint: {
+          'fill-color': '#088',
+          'fill-opacity': 0.8
+        },
+        filter: ['==', '$type', 'Polygon']
+      });
+
+
+      var draw = new MapboxDraw({
+        displayControlsDefault: false,
+        controls: {
+          polygon: true,
+          trash: true
+        },
+      });
+
+      this.mapService.map.addControl(draw);
+      draw.add(this.mapService.listaParcelasNew);
+
+      this.mapService.map.on('click', 'poligonos', (e) => {
+        const feature = e.features[0];
+        draw.changeMode('direct_select', { featureId: feature.id });
       });
     });
 
-
-    var draw = new MapboxDraw({
-      displayControlsDefault: false,
-      // Select which mapbox-gl-draw control buttons to add to the map.
-      controls: {
-        polygon: true,
-        trash: true
-      },
-      // Set mapbox-gl-draw to draw by default.
-      // The user does not have to click the polygon control button first.
-      defaultMode: 'draw_polygon'
-    });
-    this.mapService.map.addControl(draw);
 
     this.mapService.map.on('draw.create', (event: any) => {
       var polygon = event.features[0];
@@ -54,31 +70,78 @@ export class MapAreaNewComponent implements OnInit {
       item.id = polygon.id;
       item.coordinates = coordinates;
 
-      if ( !this.mapService.listaParcelas.find( x=> x.id == item.id )  )
-      {
-        this.mapService.listaParcelas.push(item);
-        localStorage.setItem('listaParcelas', JSON.stringify(this.mapService.listaParcelas));
-
-        
+      if (this.mapService.listaParcelasNew.features != undefined) {
+        if (!this.mapService.listaParcelasNew.features.find(x => x.id == polygon.id)) {
+          this.mapService.listaParcelasNew.features.push(polygon);
+        }
+      }
+      else {
+        this.mapService.listaParcelasNew.features = [];
+        this.mapService.listaParcelasNew.features.push(polygon);
       }
 
+      localStorage.setItem('listaParcelasNew', JSON.stringify(this.mapService.listaParcelasNew));
+
+      if (!this.mapService.listaParcelas.find(x => x.id == item.id)) {
+        this.mapService.listaParcelas.push(item);
+        localStorage.setItem('listaParcelas', JSON.stringify(this.mapService.listaParcelas));
+      }
     });
 
-    // this.mapService.map.on('draw.update', function (event: any) {
-    //   //const layerType = e.features[0].geometry.type;
-    //   //const layerId = e.features[0].id;
-    //   // Aquí puedes agregar lógica para manejar la creación de una nueva capa dibujada
+    this.mapService.map.on('draw.update', (event: any) => {
+      var polygon = event.features[0];
+      var coordinates = polygon.geometry.coordinates;
 
-    //   var polygon = event.features[0];
-    //   var coordinates = polygon.geometry.coordinates;
-    //   alert(coordinates)
-    // });
+      var item: GeoJSON = {};
+      item.id = polygon.id;
+      item.coordinates = coordinates;
 
-  }
+      if (this.mapService.listaParcelasNew.features != undefined) {
+        var indexToRemove = this.mapService.listaParcelasNew.features.findIndex(x => x.id == polygon.id);
 
-  public savePoligon(polygon: any): void {
+        if (indexToRemove !== -1) {
+          this.mapService.listaParcelasNew.features.splice(indexToRemove, 1);
+        }
+
+        this.mapService.listaParcelasNew.features.push(polygon);
+      }
+      else {
+        this.mapService.listaParcelasNew.features = [];
+        this.mapService.listaParcelasNew.features.push(polygon);
+      }
+
+      localStorage.setItem('listaParcelasNew', JSON.stringify(this.mapService.listaParcelasNew));
 
 
+      var indexToRemove2 = this.mapService.listaParcelas.findIndex(x => x.id == item.id);
+      if (indexToRemove2 !== -1) {
+        this.mapService.listaParcelas.splice(indexToRemove2, 1);
+        this.mapService.listaParcelas.push(item);
+      }
+
+      localStorage.setItem('listaParcelas', JSON.stringify(this.mapService.listaParcelas));
+    });
+
+    this.mapService.map.on('draw.delete', (event: any) => {
+      var polygon = event.features[0];
+     
+      if (this.mapService.listaParcelasNew.features != undefined) {
+        var indexToRemove = this.mapService.listaParcelasNew.features.findIndex(x => x.id == polygon.id);
+
+        if (indexToRemove !== -1) 
+          this.mapService.listaParcelasNew.features.splice(indexToRemove, 1);
+      }
+
+      localStorage.setItem('listaParcelasNew', JSON.stringify(this.mapService.listaParcelasNew));
+
+
+      var indexToRemove2 = this.mapService.listaParcelas.findIndex(x => x.id == polygon.id);
+      if (indexToRemove2 !== -1) 
+        this.mapService.listaParcelas.splice(indexToRemove2, 1);
+      
+
+      localStorage.setItem('listaParcelas', JSON.stringify(this.mapService.listaParcelas));
+    });
 
   }
 }

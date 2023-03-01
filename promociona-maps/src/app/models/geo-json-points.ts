@@ -1,5 +1,5 @@
-export interface GeoJSONPoints {
-    type: string;
+export interface FeatureCollection {
+    type: string;    
     features: Feature[];
 }
 
@@ -14,6 +14,7 @@ export interface Properties {
 
 export interface Feature {
     type: string;
+    id ?: string;
     geometry: Geometry;
     properties: Properties;
 }
