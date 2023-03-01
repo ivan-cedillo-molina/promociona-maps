@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import { environment } from 'src/environments/environment';
+import { GeoJSON } from '../models/geo-json';
+import { Feature, GeoJSONPoints } from '../models/geo-json-points';
 
 @Injectable({
   providedIn: 'root'
@@ -14,9 +16,7 @@ export class MapService {
   lat = 40.4165000;
   lng = -3.7025600;
   zoom = 5;
-
-
-
+  listaParcelas : GeoJSON [] = [];
 
   constructor() {
     // Asignamos el token desde las variables de entorno
@@ -55,4 +55,41 @@ export class MapService {
 
     this.map.addControl(new mapboxgl.NavigationControl());
   }
+
+
+  getPointList(): GeoJSONPoints {
+    
+    var items: GeoJSONPoints = {
+      type : "FeatureCollection",
+      features : []
+    };
+
+    this.listaParcelas.forEach(element => {
+
+      var feature: Feature = {
+       type : "Feature",
+       geometry : {  type : "Point", coordinates: element.coordinates[0][0] },
+       properties: {
+         name : element.id
+       }
+      };
+
+      items.features.push(feature);
+    });
+
+    return items;
+  }
+
+  getPoligonsCoordinatesList() {
+    
+    var items :any = [];
+
+    this.listaParcelas.forEach(element => {
+      items.push(element.coordinates[0]);
+    });
+
+     return items;
+   }
+
+
 }

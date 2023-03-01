@@ -1,5 +1,5 @@
-export class GeoJSON {
+export interface GeoJSON {
     id ? : string ;
     type ?: string ;
-    coordinates ?: number[][] 
+    coordinates ?: number[][][]
 }

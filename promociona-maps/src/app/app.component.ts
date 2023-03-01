@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GeoJSON } from './models/geo-json';
+import { MapService } from './services/map.service';
 
 @Component({
   selector: 'app-root',
@@ -7,16 +8,17 @@ import { GeoJSON } from './models/geo-json';
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent implements OnInit  {
+export class AppComponent implements OnInit {
   title = 'promociona-maps';
-  listaParcelas : GeoJSON[] = [];
+
+  constructor(private mapService: MapService) {
+  }
 
   ngOnInit(): void {
-    let lista = localStorage.getItem('listaParcelas');
-
-    if (typeof lista === 'string') {
-      this.listaParcelas = JSON.parse(lista);
-    } 
+    const jsonLista = localStorage.getItem('listaParcelas');
+    if (jsonLista !== null) {
+      const listaObjetos: GeoJSON[] = JSON.parse(jsonLista);
+      this.mapService.listaParcelas = listaObjetos;
+    }
   }
-  
 }

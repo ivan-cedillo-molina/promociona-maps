@@ -17,7 +17,7 @@ import { AppComponent } from '../app.component';
 
 export class MapAreaNewComponent implements OnInit {
   constructor(private mapService: MapService, private route: ActivatedRoute, private appComponent: AppComponent) {
-   }
+  }
 
   ngOnInit(): void {
     this.mapService.buildMapRegionNew();
@@ -46,27 +46,21 @@ export class MapAreaNewComponent implements OnInit {
     });
     this.mapService.map.addControl(draw);
 
-    this.mapService.map.on('draw.create', function (event: any) {
-      //const layerType = e.features[0].geometry.type;
-      //const layerId = e.features[0].id;
-      // Aquí puedes agregar lógica para manejar la creación de una nueva capa dibujada
-
+    this.mapService.map.on('draw.create', (event: any) => {
       var polygon = event.features[0];
       var coordinates = polygon.geometry.coordinates;
 
-    var item = new GeoJSON();
-    item.id = polygon.id;
-    item.coordinates = coordinates;
-  
+      var item: GeoJSON = {};
+      item.id = polygon.id;
+      item.coordinates = coordinates;
 
-    var listaParcelas : GeoJSON[] = [];
-    listaParcelas.push(item);
-  
-    //if (typeof listaParcelas === GeoJSON[]) {
-      localStorage.setItem('listaTareas', JSON.stringify(listaParcelas));
-    //} 
-     
-      //this.savePoligon(polygon) ;
+      if ( !this.mapService.listaParcelas.find( x=> x.id == item.id )  )
+      {
+        this.mapService.listaParcelas.push(item);
+        localStorage.setItem('listaParcelas', JSON.stringify(this.mapService.listaParcelas));
+
+        
+      }
 
     });
 
@@ -82,10 +76,10 @@ export class MapAreaNewComponent implements OnInit {
 
   }
 
-  public savePoligon(polygon: any) : void {
+  public savePoligon(polygon: any): void {
 
-    
-    
+
+
   }
 }
 

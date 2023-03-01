@@ -18,7 +18,8 @@ export class MapPointsComponent implements OnInit {
     this.mapService.map.on('load', () => {
       this.mapService.map.addSource('points', {
         type: 'geojson',
-        data: '../assets/earthquakes.geojson',
+        // data: '../assets/earthquakes.geojson',
+        data: this.mapService.getPointList(),
         cluster: true,
         clusterMaxZoom: 50,
         clusterRadius: 100,
