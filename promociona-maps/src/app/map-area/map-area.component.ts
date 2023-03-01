@@ -13,13 +13,10 @@ export class MapAreaComponent implements OnInit {
   constructor(private mapService: MapService, private route: ActivatedRoute) { }
 
   ngOnInit() {
-
-
-
     this.route.queryParams.subscribe(params => {
       var lng: number;
       var lat: number;
-      var zoom : number;
+      var zoom: number;
 
       if (params['lng'] != undefined) {
         lng = params['lng'];
@@ -34,7 +31,6 @@ export class MapAreaComponent implements OnInit {
 
       this.mapService.buildMapRegion(zoom, lng, lat);
 
-
       this.mapService.map.on('load', () => {
         this.mapService.map.addSource('maine', {
           type: 'geojson',
@@ -43,7 +39,7 @@ export class MapAreaComponent implements OnInit {
             geometry: {
               type: 'Polygon',
               // These coordinates outline Maine.
-              coordinates: this.mapService.getPoligonsCoordinatesList() ,
+              coordinates: this.mapService.getPoligonsCoordinatesList(),
             },
           },
         });
@@ -71,9 +67,6 @@ export class MapAreaComponent implements OnInit {
           },
         });
       });
-
-
-
     });
   }
 

@@ -16,13 +16,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const jsonLista = localStorage.getItem('listaParcelas');
-    if (jsonLista !== null) {
-      const listaObjetos: GeoJSON[] = JSON.parse(jsonLista);
-      this.mapService.listaParcelas = listaObjetos;
-    }
-
-
     const jsonListaParcelas = localStorage.getItem('listaParcelasNew');
     if (jsonListaParcelas !== null) {
       const listaObjetos: FeatureCollection = JSON.parse(jsonListaParcelas);

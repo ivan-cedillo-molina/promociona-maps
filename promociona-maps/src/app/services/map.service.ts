@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import { environment } from 'src/environments/environment';
 import { GeoJSON } from '../models/geo-json';
-//import { Feature, FeatureCollection } from '../models/geo-json-points';
 import { FeatureCollection, Feature, Polygon } from 'geojson';
 
 
@@ -18,12 +17,13 @@ export class MapService {
   lat = 40.4165000;
   lng = -3.7025600;
   zoom = 5;
-  listaParcelas: GeoJSON[] = [];
-
   listaParcelasNew: FeatureCollection = {
     type: "FeatureCollection",
     features: []
   };
+ // listaParcelas: GeoJSON[] = [];
+
+
 
   constructor() {
     // Asignamos el token desde las variables de entorno
@@ -81,21 +81,24 @@ export class MapService {
             name: element.id
           }
         };
+
+        items.features.push(feature);
       }
 
-      items.features.push(feature);
+      
     });
 
     return items;
   }
 
   getPoligonsCoordinatesList() {
-
     var items: any = [];
 
-    this.listaParcelas.forEach(element => {
-      items.push(element.coordinates[0]);
+    this.listaParcelasNew.features.forEach(element => {
+      if (element.geometry.type === 'Polygon') 
+        items.push(element.geometry.coordinates[0])
     });
+
 
     return items;
   }

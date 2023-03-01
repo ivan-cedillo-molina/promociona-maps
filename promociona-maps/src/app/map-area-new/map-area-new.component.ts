@@ -29,7 +29,7 @@ export class MapAreaNewComponent implements OnInit {
         data: {
           type: 'FeatureCollection',
           features: []
-        },
+        }
       });
 
       this.mapService.map.addLayer({
