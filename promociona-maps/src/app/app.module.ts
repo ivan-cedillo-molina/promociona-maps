@@ -5,13 +5,15 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MapPointsComponent } from './map-points/map-points.component';
 import { MapAreaComponent } from './map-area/map-area.component';
+import { MapAreaHeatComponent } from './map-area-heat/map-area-heat.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     MapPointsComponent,
-    MapAreaComponent
+    MapAreaComponent,
+    MapAreaHeatComponent
   ],
   imports: [
     BrowserModule,
