@@ -1,5 +1,6 @@
 import { AfterViewInit } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import * as mapboxgl from 'mapbox-gl';
 import { MapService } from '../services/map.service';
 
@@ -9,7 +10,7 @@ import { MapService } from '../services/map.service';
   styleUrls: ['./map-points.component.css'],
 })
 export class MapPointsComponent implements OnInit {
-  constructor(private mapService: MapService) {}
+  constructor(private mapService: MapService , private router: Router ) { }
 
   ngOnInit() {
     this.mapService.buildMap();
@@ -17,10 +18,18 @@ export class MapPointsComponent implements OnInit {
     this.mapService.map.on('load', () => {
       this.mapService.map.addSource('points', {
         type: 'geojson',
-        data: '../assets/earthquakes.geojson',
+        // data: '../assets/earthquakes.geojson',
+        data: this.mapService.getPointList(),
         cluster: true,
-        clusterMaxZoom: 40,
+        clusterMaxZoom: 50,
         clusterRadius: 100,
+      });
+
+      this.mapService.map.loadImage('assets/images/iconoPuntoMapa.png', (error: any, image: any) => {
+        if (error) throw error;
+
+        // Add the image to the map style.
+        this.mapService.map.addImage('icon', image);
       });
 
       this.mapService.map.addLayer({
@@ -41,11 +50,11 @@ export class MapPointsComponent implements OnInit {
           'circle-radius': [
             'step',
             ['get', 'point_count'],
-            20,
-            100,
             30,
-            750,
+            100,
             40,
+            750,
+            50,
           ],
         },
       });
@@ -64,16 +73,32 @@ export class MapPointsComponent implements OnInit {
 
       this.mapService.map.addLayer({
         id: 'earthquake_circle',
-        type: 'circle',
+        type: 'symbol',
         source: 'points',
         filter: ['!=', 'cluster', true],
-        paint: {
-          'circle-color': '#11b4da',
-          'circle-radius': 4,
-          'circle-stroke-width': 1,
-          'circle-stroke-color': '#fff',
-        },
+        // paint: {
+        //   'circle-color': '#11b4da',
+        //   'circle-radius': 4,
+        //   'circle-stroke-width': 1,
+        //   'circle-stroke-color': '#fff',
+        // }
+        'layout': {
+          'icon-image': 'icon',
+          'icon-size': 0.5
+        }
       });
+
+      this.mapService.map.on('click', 'earthquake_circle', (e:any) => {
+        var features = this.mapService.map.queryRenderedFeatures(e.point, { layers: ['earthquake_circle'] });
+        if (!features.length) {
+          return;
+        }
+        var feature = features[0];
+        this.router.navigate(['map-area'],{ queryParams: { lat : feature.geometry.coordinates[1] , lng : feature.geometry.coordinates[0] }} );
+      });
+
+
+
     });
   }
 }
