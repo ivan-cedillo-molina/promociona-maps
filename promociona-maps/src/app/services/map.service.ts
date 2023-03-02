@@ -41,6 +41,17 @@ export class MapService {
     this.map.addControl(new mapboxgl.NavigationControl());
   }
 
+  buildMapHeat() {
+    this.map = new mapboxgl.Map({
+      container: 'map-points-heat',
+      style: this.style,
+      zoom: this.zoom,
+      center: [this.lng, this.lat]
+    });
+
+    this.map.addControl(new mapboxgl.NavigationControl());
+  }
+
   buildMapRegion(zoom: number, lng: number, lat: number) {
     this.map = new mapboxgl.Map({
       container: 'map-region',
@@ -85,7 +96,7 @@ export class MapService {
         items.features.push(feature);
       }
 
-      
+
     });
 
     return items;
@@ -95,7 +106,7 @@ export class MapService {
     var items: any = [];
 
     this.listaParcelasNew.features.forEach(element => {
-      if (element.geometry.type === 'Polygon') 
+      if (element.geometry.type === 'Polygon')
         items.push(element.geometry.coordinates[0])
     });
 

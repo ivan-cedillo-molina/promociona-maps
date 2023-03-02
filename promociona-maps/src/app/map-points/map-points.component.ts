@@ -9,6 +9,7 @@ import { MapService } from '../services/map.service';
   templateUrl: './map-points.component.html',
   styleUrls: ['./map-points.component.css'],
 })
+
 export class MapPointsComponent implements OnInit {
   constructor(private mapService: MapService , private router: Router ) { }
 
