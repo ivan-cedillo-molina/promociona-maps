@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { MapPointsComponent } from './map-points/map-points.component';
 import { MapAreaComponent } from './map-area/map-area.component';
 import { MapPointsHeatComponent } from './map-points-heat/map-points-heat.component';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { MapPointsHeatComponent } from './map-points-heat/map-points-heat.compon
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

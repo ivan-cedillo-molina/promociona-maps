@@ -3,6 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as mapboxgl from 'mapbox-gl';
 import { MapService } from '../services/map.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-map-area',
@@ -10,7 +13,7 @@ import { MapService } from '../services/map.service';
   styleUrls: ['./map-area.component.css'],
 })
 export class MapAreaComponent implements OnInit {
-  constructor(private mapService: MapService, private route: ActivatedRoute) { }
+  constructor(private mapService: MapService, private route: ActivatedRoute , private http: HttpClient ) { }
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
@@ -28,6 +31,24 @@ export class MapAreaComponent implements OnInit {
         lat = this.mapService.lat;
         zoom = this.mapService.zoom;
       }
+
+      var MAPBOX_API = 'https://api.mapbox.com/geocoding/v5/mapbox.places';
+      var ACCESS_TOKEN = environment.mapBoxToken;
+
+      var url = `${MAPBOX_API}/${lng},${lat}.json?access_token=${ACCESS_TOKEN}&types=region,place`;
+      var headers = new HttpHeaders().set('Content-Type', 'application/json');
+
+      //var features:any  = {};
+
+      // this.http.get(url, { headers }).pipe(
+      //   map((response: any) => {
+      //     features = response.features;
+      //     //const provincia = features.find(f => f.place_type.includes('region')).text;
+      //     //const ciudad = features.find(f => f.place_type.includes('place')).text;
+      //     //return { provincia, ciudad };
+      //   })
+      // );
+
 
       this.mapService.buildMapRegion(zoom, lng, lat);
 
